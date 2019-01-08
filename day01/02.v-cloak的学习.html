@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="lib/vue.min.js""></script>
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- 使用v-cloak 能够解决插值闪烁问题 -->
+        <!-- 插值表达式只会替换占位符 -->
+        <p v-cloak>{{msg}}</p>
+        <!-- 默认v-test没有默认的闪烁的问题 -->
+        <!-- v-test 会覆盖元素中原本的所有内容 -->
+        <h4 v-text="msg"></h4>
+        <div v-html="msg2"></div>
+        <!-- 绑定属性 -->
+        <!-- <input type="button" value="按钮" v-bind:title="mytitle+'123'"> -->
+        <!-- v-bind可以简写为： -->
+        <!-- vue 中提供v-on 事件绑定机制 -->
+        <!-- 现在vue v-on 事件绑定机制可以绑定 js 默认的方法 -->
+        <!-- <input type="button" value="按钮" :title="mytitle+'123'" v-on:click="alert('hello vue')">      -->
+        <!-- v-on 的缩写是@ -->
+        <input type="button" value="按钮" :title="mytitle+'123'" @click="show('hello vue')">    
+    </div>
+    <script>
+        var vm=new Vue({
+            el:'#app',
+            data:{
+                msg:123,             
+                msg2:'<h1>哈哈，我是一个大大的h1标签</h1>',
+                mytitle:'这是自己定义的标题',                
+            },
+            methods:{
+                //这个methods属性中定会了当前vue中所有方法
+                show:function(msg){                    
+                    alert(msg);
+                }
+            }
+        })
+    </script>
+</body>
+</html>
