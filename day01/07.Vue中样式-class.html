@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="lib/vue.min.js"></script>
+    <style>
+        .red{
+            color: red;
+        }
+        .italic{
+            font-style: italic;
+        }
+        .active{
+            letter-spacing: 0.5em;
+        }
+        .thin{
+            font-weight: 200;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <!-- <h1 class="red thin">这是一个很大的很大的h1</h1> -->
+        <!-- 第一种实现方式,直接传递一个数组-->
+        <h1 :class="['red','thin']">这是一个很大的很大的h1</h1>     
+        <!-- 第二种可以使用三元表达式-->
+        <h1 :class="['red','thin',flag?'active':'']">这是一个很大的很大的h1</h1>   
+        <!-- 第三种可以使用下列方法 -->
+        <h1 :class="['red','thin',{'active':flag}]">这是一个很大的很大的h1</h1>   
+        <!-- 第四种方式在为v-bind 对象的时候,对象的属性是类名,由于对象的属性可带引号,也可不带引号,所以这里没有写引号,
+        属性的值是一个标识符 -->
+        <h1 :class="{red:true,thin:true,italic:false,active:true}">这是一个很大的很大的h1</h1>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                flag:true
+            },
+            methods: {
+                                    
+            }
+        })
+    </script>
+</body>
+
+</html>

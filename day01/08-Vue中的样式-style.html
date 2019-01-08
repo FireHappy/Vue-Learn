@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="lib/vue.min.js"></script>
+    <style>
+        /* h1{
+            font-style:italic;
+        } */
+    </style>
+</head>
+    
+<body>
+    <div id="app">
+        <!-- 对象就是无序键值对的集合 -->
+        <h1 :style="styleObj1">这是一个大大的h1标签,听说我挺骄傲</h1>
+        <!-- 使用对象数组 -->
+        <h1 :style="[styleObj1,styleObj2]">这是一个大大的h1标签,听说我挺骄傲</h1>
+    </div>
+    <script>
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                styleObj1:{'color':'red','font-weight':200},
+                styleObj2:{'font-style':'italic'}
+            },
+            methods: {
+                                    
+            }
+        })
+    </script>
+</body>
+
+</html>
