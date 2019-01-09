@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="lib/vue.js"></script>
+    <script src="lib/vue-resource.js"></script>
+    <link rel="stylesheet" href="lib/bootstrap.min.css">
+</head>
+
+<body>
+    <div id="app">
+
+
+
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">添加品牌</h3>
+            </div>
+            <div class="panel-body form-inline">
+                <label>
+                    Name:
+                    <input type="name" v-model="name">
+                </label>
+                <input type="button" value="添加" @click="add">
+            </div>
+        </div>
+
+
+        <table class="table table-hove table-hover table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Ctime</th>
+                    <th>Operation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in list" :key="item.id">
+                    <td>{{item.id}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.ctime|dateFormat("yyyy-mm-dd hh:mm:ss")}}</td>
+                    <td><input type="button" class="btn btn-danger" value="删除"></td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <script>
+        Vue.http.options.root='http://vue.studyit.io/';
+        //时间格式化
+        function dateFormat(dateStr, pattern) {
+            //根据时间给定时间字符串,得到特定的时间
+            var dt = new Date(dateStr);
+            //yyyy-mm-dd
+            var y = dt.getFullYear();
+            var m = (dt.getMonth() + 1).toString().padStart(2, '0');
+            var d = dt.getDate().toString().padStart(2, '0');
+            if (pattern && pattern.toLowerCase() === 'yyyy-mm-dd') {
+                return y + "-" + m + "-" + d;
+            } else if (pattern && pattern.toLowerCase() === 'yyyy-mm-dd hh:mm:ss') {
+                var hours = dt.getHours().toString().padStart(2, '0');
+                var minutes = dt.getMinutes().toString().padStart(2, '0');
+                var seconds = dt.getSeconds().toString().padStart(2, '0');
+                return y + "-" + m + "-" + d + ' ' + hours + ":" + minutes + ":" + seconds;
+            } else {
+                return dateStr;
+            }
+        }
+
+        Vue.filter('dateFormat', dateFormat);
+
+
+        var vm = new Vue({
+            el: "#app",
+            data: {
+                name: "",
+                list: //存放所有品牌列表的数组
+                [{
+                        id: 1,
+                        name: "保时泰",
+                        ctime: new Date()
+                    },
+                    {
+                        id: 2,
+                        name: "保时捷",
+                        ctime: new Date()
+                    }
+                ]
+            },
+            methods: {
+                add() {
+                    //todo 向服务器发送添加数据的请求                
+                },
+                getAllList(){
+                    //分析:
+                    //1.由于已经导入vue-resources这个包,所以可以直接通过 this.$http发起数据请求
+                    //2.更具api文档,知道,获取列表的时候,应该发起一个get请求
+                    //3.this.$http.get('url').then(funtion(result){})
+                    //4.当通过then指定毁掉函数之后,在回调函数中,可以拿到数据服务器返回的result
+                    //5.先判断result.statue是否等于0,如果等于0,就成功了,可以吧result.message赋值给this.list;如果不等于0,可以弹框提示,获取数据失败
+                    this.$http.get('api/getprodlist').then(result=>{
+                        var result=result.body;
+                        if(result.status===0){
+                            //成功
+                            this.list=result.message;
+                        }else{
+                            alert('获取数据失败');
+                        }
+                    })
+                },            
+            },
+            created(){
+                this.getAllList();
+            }
+        })
+    </script>
+</body>
+
+</html>
