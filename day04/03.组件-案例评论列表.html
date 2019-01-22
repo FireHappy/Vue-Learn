@@ -11,55 +11,95 @@
 </head>
 
 <body>
-    <div id="app">
-                
+    <div id="app">                
         <ul class="list-group">
             <li class="list-group-item"  v-for="item in list" :key="item.id">                                    
                 <span class="badge">评论人:{{item.user}}</span>
                 {{item.content}}
             </li>          
         </ul>        
-        
-        <cmt-box></cmt-box>
-                        
+        <cmt-box @action="loadComments"></cmt-box>            
     </div>
 
     <template id="temp1">
         <div>
-            <div class="form-group">
-                <label for="评论人:"></label>
-                <input type="text" class="form-group">                
+            <div class="form-group">                
+                <label>评论人:</label>              
+                <input type="text" class="form-control" v-model:value="user">  
             </div>
-
-            <div class="form-group">
-                <label for="评论内容:">
-                    <textarea class="form-group"></textarea>
-                </label>
+            <div class="form-group">                
+                <label>评论内容:</label>
+                <textarea  name="" id="input" class="form-control" rows="10" v-model:value="content"></textarea>                
+            </div>
+            <div class="form-group">                                                           
+                <input class="btn btn-success" type="button" value="提交" style="float:right" @click="postCommnet">            
+            </div>
+            <div class="form-group">                                                           
+                <input class="btn btn-danger" type="button" value="清空所有评论" style="float:right" @click="cleanAllComments">            
             </div>
         </div>
     </template>
   
-    <script>         
+    <script>             
         var commnetBox={
-            template:"temp1"          
+            template:"#temp1",
+            data(){
+                return{
+                    user:'',
+                    content:''
+                }
+            },
+            methods:{
+                // 发表评论的方法
+                postCommnet(){
+                    //分析:发表评论的业务轮机
+                    //1.评论的数据存放到哪里去?? 存放到了localStorage中
+                    //2.先组织出一个最新的评论数据对象
+                    //3.想办法,把第二部中得到的评论对象,保存到localStorage中
+                    //  3.1 localStorage中只支持存放字符串数据,要先调用JSON.stringify       
+                    //  3.2 在保存最新的评论数据之前,要先从localStorage中获取到之前的评论数据(string),转换为一个 数组对象,然后,把最新的评论,push到这个数组中
+                    //  3.3 如果获取到的localStorage 中的评论字符串,为空不存在,则 可以返回一个'[]'让JSON.parse的转换
+                    //  3.4 把最新的 评论列表数组,再次调用JSON.stringify 转化为数组字符串,然后调用localStrage.setItem()
+                    var comment={id:Date.now()+Math.random(1000),user:this.user,content:this.content}
+                    //从localStorage中获取所有的评论
+                    var list = JSON.parse(localStorage.getItem("cmts")||'[]');
+                    list.unshift(comment);//在数组顶部添加,push添加到尾部
+                    //保存最新的
+                    localStorage.setItem("cmts",JSON.stringify(list));
+                    this.user=this.content="";
+                    this.$emit("action");//注意$emit中方法名默认小写,及时传递进来的方法有大写的字母,也会转化为小写    
+                },
+                // 清空所有评论
+                cleanAllComments(){
+                    console.log("清空所有评论");
+                    localStorage.removeItem("cmts");
+                    this.$emit('action');
+                }
+            }
         }
-
 
         var vm = new Vue({
             el: "#app",
             data: {
                list:[
-                   {id:Date.now(),user:"李白",content:"天生我才必有用"},
-                   {id:Date.now(),user:"大白",content:"我是你的大白白"},
-                   {id:Date.now(),user:"键盘手",content:"楼上都是我儿子"}
+                   {id:Date.now()+Math.random(1000),user:"李白",content:"天生我才必有用"},
+                   {id:Date.now()+Math.random(1000),user:"大白",content:"我是你的大白白"},
+                   {id:Date.now()+Math.random(1000),user:"键盘手",content:"楼上都是我儿子"}
                 ]
             },
             methods: {
-                
+                loadComments(){
+                    //从本地localStorage加载评论列表
+                    var list=JSON.parse(localStorage.getItem("cmts")||"[]")
+                    this.list=list;
+                }
             },            
             components:{
                 "cmt-box":commnetBox
-            }
+            },
+            created() {
+                this.loadComments();
+            },
         })
     </script>
 </body>
